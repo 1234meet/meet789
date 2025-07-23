@@ -8,22 +8,27 @@ package blackjackgame;
  *
  * @author patel
  */
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Deck {
-    private List<Card> cards;
+    private final ArrayList<Card> cards;
 
     public Deck() {
         cards = new ArrayList<>();
         String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
-        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        String[] ranks = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
+        int[] values = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
 
         for (String suit : suits) {
-            for (String rank : ranks) {
-                cards.add(new Card(rank, suit));
+            for (int j = 0; j < ranks.length; j++) {
+                cards.add(new Card(ranks[j], suit, values[j]));
             }
         }
+    }
 
+    public void shuffle() {
         Collections.shuffle(cards);
     }
 
@@ -31,4 +36,3 @@ public class Deck {
         return cards.remove(0);
     }
 }
-

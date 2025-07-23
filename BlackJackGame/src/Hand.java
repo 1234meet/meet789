@@ -1,5 +1,8 @@
-package blackjackgame;
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+import blackjackgame.Card;
 import java.util.ArrayList;
 
 public class Hand {
@@ -19,12 +22,9 @@ public class Hand {
 
         for (Card card : cards) {
             score += card.getValue();
-            if (card.getRank().equals("Ace")) {
-                aceCount++;
-            }
+            if (card.getRank().equals("Ace")) aceCount++;
         }
 
-        // Adjust Aces if score exceeds 21
         while (score > 21 && aceCount > 0) {
             score -= 10;
             aceCount--;
@@ -42,8 +42,7 @@ public class Hand {
         }
     }
 
-    // ✅ FIXED: Clear method implemented properly
     public void clear() {
-        cards.clear(); // Removes all cards from the hand
+        cards.clear();
     }
 }

@@ -4,17 +4,15 @@
  */
 package blackjackgame;
 
-/**
- *
- * @author patel
- */
 public class Player {
-    private String name;
-    private Hand hand;
+    private final String name;
+    private final Hand hand;
+    private int totalScore; // NEW: Track points across rounds
 
     public Player(String name) {
         this.name = name;
-        hand = new Hand();
+        this.hand = new Hand();
+        this.totalScore = 0;
     }
 
     public void addCard(Card card) {
@@ -22,22 +20,32 @@ public class Player {
     }
 
     public int getScore() {
-        return hand.getScore();
-    }
-
-    public void showHand(boolean hideFirst) {
-        hand.showHand(name, hideFirst);
+        return hand.calculateScore();
     }
 
     public boolean isBust() {
-        return hand.isBust();
+        return getScore() > 21;
     }
 
-    public String getName() {
-        return name;
+    public void showHand(boolean hideFirstCard) {
+        System.out.println(name + "'s Hand:");
+        hand.displayHand(hideFirstCard);
+        if (!hideFirstCard) {
+            System.out.println("Score: " + getScore());
+        }
     }
 
-    public Hand getHand() {
-        return hand;
+    // NEW: Clear hand between rounds
+    public void clearHand() {
+        hand.clear();
+    }
+
+    // NEW: Add and get cumulative score
+    public void addScore(int points) {
+        totalScore += points;
+    }
+
+    public int getTotalScore() {
+        return totalScore;
     }
 }
