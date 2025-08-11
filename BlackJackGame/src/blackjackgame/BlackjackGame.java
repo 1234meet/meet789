@@ -6,54 +6,39 @@ public class BlackjackGame {
     private Deck deck;
     private Player player;
     private Player dealer;
-    private int roundCounter; // NEW: Track rounds
-    private Scanner sc = new Scanner(System.in); // ✅ Scanner moved to class-level
 
-    public void startGame() {
+    public BlackjackGame() {
+        deck = new Deck();
         player = new Player("Player");
         dealer = new Player("Dealer");
-        roundCounter = 0;
-
-        // Play 4 rounds
-        for (int i = 1; i <= 4; i++) {
-            System.out.println("\n=== Round " + i + " ===");
-            playRound();
-            displayScores();
-        }
-
-        // Final result after 4 rounds
-        determineWinner();
     }
 
-    // Play one round of Blackjack
-    private void playRound() {
-        deck = new Deck();
-        deck.shuffle();
+    public void play() {
+        System.out.println("=== Welcome to Blackjack ===");
 
-        // Clear hands for new round
-        player.clearHand();
-        dealer.clearHand();
+        // Deal 2 cards each
+        for (int i = 0; i < 2; i++) {
+            player.addCardToHand(deck.dealCard());
+            dealer.addCardToHand(deck.dealCard());
+        }
 
-        // Initial deal
-        player.addCard(deck.drawCard());
-        dealer.addCard(deck.drawCard());
-        player.addCard(deck.drawCard());
-        dealer.addCard(deck.drawCard());
+        System.out.println("\nYour hand:");
+        player.getHand().displayHand();
 
-        // Show hands
-        player.showHand(false);
-        dealer.showHand(true);
+        System.out.println("\nDealer's visible card:");
+        System.out.println(dealer.getHand().getCards().get(0));
 
         // Player's turn
+        Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.print("Do you want to Hit or Stand? (h/s): ");
-            String choice = sc.nextLine();
-            if (choice.equalsIgnoreCase("h")) {
-                player.addCard(deck.drawCard());
-                player.showHand(false);
-                if (player.isBust()) {
-                    System.out.println("You busted! Dealer wins this round.");
-                    dealer.addScore(1); // Dealer gains point
+            System.out.print("Do you want to hit or stand? (h/s): ");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("h")) {
+                player.addCardToHand(deck.dealCard());
+                System.out.println("\nYour hand:");
+                player.getHand().displayHand();
+                if (player.getHand().isBust()) {
+                    System.out.println("You busted! Dealer wins.");
                     return;
                 }
             } else {
@@ -62,46 +47,32 @@ public class BlackjackGame {
         }
 
         // Dealer's turn
-        dealer.showHand(false);
-        while (dealer.getScore() < 17) {
-            dealer.addCard(deck.drawCard());
-            dealer.showHand(false);
-        }
-
-        // Determine round winner
-        if (dealer.isBust()) {
-            System.out.println("Dealer busted! You win this round!");
-            player.addScore(1);
-        } else {
-            int playerScore = player.getScore();
-            int dealerScore = dealer.getScore();
-
-            if (playerScore > dealerScore) {
-                System.out.println("You win this round!");
-                player.addScore(1);
-            } else if (playerScore < dealerScore) {
-                System.out.println("Dealer wins this round!");
-                dealer.addScore(1);
-            } else {
-                System.out.println("It's a tie!");
+        System.out.println("\nDealer's hand:");
+        dealer.getHand().displayHand();
+        while (dealer.getHand().getTotalValue() < 17) {
+            System.out.println("Dealer hits.");
+            dealer.addCardToHand(deck.dealCard());
+            dealer.getHand().displayHand();
+            if (dealer.getHand().isBust()) {
+                System.out.println("Dealer busted! You win!");
+                return;
             }
         }
-    }
 
-    // Show cumulative scores after each round
-    private void displayScores() {
-        System.out.println("Cumulative Scores -> Player: " + player.getTotalScore() + " | Dealer: " + dealer.getTotalScore());
-    }
+        // Compare hands
+        int playerTotal = player.getHand().getTotalValue();
+        int dealerTotal = dealer.getHand().getTotalValue();
 
-    // Final winner after all rounds
-    private void determineWinner() {
-        System.out.println("\n=== FINAL RESULT ===");
-        if (player.getTotalScore() > dealer.getTotalScore()) {
-            System.out.println("Player is the overall winner!");
-        } else if (dealer.getTotalScore() > player.getTotalScore()) {
-            System.out.println("Dealer is the overall winner!");
+        System.out.println("\nFinal Results:");
+        System.out.println("Your total: " + playerTotal);
+        System.out.println("Dealer total: " + dealerTotal);
+
+        if (playerTotal > dealerTotal) {
+            System.out.println("You win!");
+        } else if (playerTotal < dealerTotal) {
+            System.out.println("Dealer wins!");
         } else {
-            System.out.println("It's an overall tie!");
+            System.out.println("It's a tie!");
         }
     }
 }

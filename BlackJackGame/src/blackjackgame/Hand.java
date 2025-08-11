@@ -1,9 +1,9 @@
 package blackjackgame;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Hand {
-    private ArrayList<Card> cards;
+    private List<Card> cards;
 
     public Hand() {
         cards = new ArrayList<>();
@@ -13,37 +13,36 @@ public class Hand {
         cards.add(card);
     }
 
-    public int calculateScore() {
-        int score = 0;
+    public int getTotalValue() {
+        int total = 0;
         int aceCount = 0;
-
         for (Card card : cards) {
-            score += card.getValue();
+            total += card.getValue();
             if (card.getRank().equals("Ace")) {
                 aceCount++;
             }
         }
 
-        // Adjust Aces if score exceeds 21
-        while (score > 21 && aceCount > 0) {
-            score -= 10;
+        while (total > 21 && aceCount > 0) {
+            total -= 10;
             aceCount--;
         }
-        return score;
+
+        return total;
     }
 
-    public void displayHand(boolean hideFirstCard) {
-        for (int i = 0; i < cards.size(); i++) {
-            if (i == 0 && hideFirstCard) {
-                System.out.println("[Hidden Card]");
-            } else {
-                System.out.println(cards.get(i));
-            }
+    public void displayHand() {
+        for (Card card : cards) {
+            System.out.println(card);
         }
+        System.out.println("Total: " + getTotalValue());
     }
 
-    // ✅ FIXED: Clear method implemented properly
-    public void clear() {
-        cards.clear(); // Removes all cards from the hand
+    public boolean isBust() {
+        return getTotalValue() > 21;
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 }
